@@ -1,0 +1,16 @@
+.index-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+  
+.card {
+    flex: 0 1 18rem; /* Makes each card take a width of 18rem, and shrink if needed */
+    margin: 10px;
+  }

@@ -1,6 +1,8 @@
 const pool = require('../../db');
-const queries = require('./queries');
+const queries = require('./queries');  //imported from queries.js
 
+//functions to perform CRUD operations on books
+//remember to import controller into routes.js
 const getBooks = (req, res) => {
   pool.query(queries.getBooks, (error, results) => {
     if (error) throw error;
@@ -8,7 +10,7 @@ const getBooks = (req, res) => {
   });
 };
 const getBooksById = (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(req.params.id);//parses string into an integer
   pool.query(queries.getBooksById, [id], (error, results) => {
     if (error) throw error;
     res.status(200).json(results.rows);

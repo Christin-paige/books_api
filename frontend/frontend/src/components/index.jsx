@@ -1,17 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { BookShelfContext } from '../context/bookShelf';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import SearchBar from './searchBar';
+
 
 export default function Index() {
   const [books, setBooks] = useState([]);
+  const [results, setResults] = useState([]);
+  const { addToShelf } = useContext(BookShelfContext)
 
   function getBooks() {
     fetch('http://localhost:3000/api/v1/books')
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        setBooks(data);
+        setBooks(books);
+        setResults(data);
       })
       .catch((error) => {
         console.error('Error fetching books:', error);
@@ -23,12 +27,16 @@ export default function Index() {
   }, []);
 
   return (
-    <div>
+   <div>
+    <SearchBar setResults={setResults}/>
+    <div className="index-container">
+       
       <h1>Seneca Reads</h1>
-      <Card style={{ width: '18rem' }}>
-        {books.length > 0 ? (
-          books.map((book) => (
-            <div key={book.id}>
+      <div className="card-container">
+      {results.length > 0 ? (
+                     results.map((book) => (
+       
+            <Card key={book.id} className= "card" style={{ width: '18rem' }}>
               <Card.Img
                 variant="top"
                 src={book.imageurl}
@@ -41,14 +49,19 @@ export default function Index() {
                 <Card.Text>{book.author}</Card.Text>
                 <Card.Text>{book.genre}</Card.Text>
                 <Card.Text>{book.summary}</Card.Text>
-                <Button variant="primary">Want to Read</Button>
+                <Button variant="primary" onClick={() => addToShelf(book)}>
+                  Want to Read
+                  </Button>
               </Card.Body>
-            </div>
+           </Card>
           ))
         ) : (
           <p>There are no books to show!</p>
         )}
-      </Card>
+    
+      </div>
     </div>
+    </div>
+   
   );
 }
