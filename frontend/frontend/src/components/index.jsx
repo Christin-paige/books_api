@@ -8,7 +8,17 @@ import SearchBar from './searchBar';
 export default function Index() {
   const [books, setBooks] = useState([]);
   const [results, setResults] = useState([]);
-  const { addToShelf } = useContext(BookShelfContext)
+  const { addToShelf } = useContext(BookShelfContext);
+  const [isFlipped, setIsFlipped] = useState([]);
+
+  const handleClick = (index) => {
+    if(isFlipped.includes(index)){
+        setIsFlipped(isFlipped.filter((item) => item !== index));
+    }else{
+        setIsFlipped([...isFlipped, index])
+    }
+    
+};
 
   function getBooks() {
     fetch('http://localhost:3000/api/v1/books')
@@ -34,14 +44,23 @@ export default function Index() {
       <h1>Seneca Reads</h1>
       <div className="card-container">
       {results.length > 0 ? (
-                     results.map((book) => (
+                     results.map((book, index) => (
        
-            <Card key={book.id} className= "card" style={{ width: '18rem' }}>
+            <Card 
+            key={book.id} 
+            className= {`card ${isFlipped.includes(index) ? "isFlipped" : ""}`} 
+            style={{ width: '18rem' }}
+            onClick={() => handleClick(index)}
+            >
+              <div className="card-front">
               <Card.Img
                 variant="top"
                 src={book.imageurl}
                 alt={`${book.title} cover`}
               />
+              </div>
+             
+              <div className="card-back">
               <Card.Body>
                 <Card.Title>
                   <strong>{book.title}</strong>
@@ -52,7 +71,11 @@ export default function Index() {
                 <Button variant="primary" onClick={() => addToShelf(book)}>
                   Want to Read
                   </Button>
+                  
               </Card.Body>
+              </div>
+              
+
            </Card>
           ))
         ) : (
